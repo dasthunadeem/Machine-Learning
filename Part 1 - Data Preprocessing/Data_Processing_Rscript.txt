@@ -1,0 +1,21 @@
+#Importing Data Set:
+a=read.csv('Data.csv')
+
+#Nullifying the missing value:
+a$Age=ifelse(is.na(a$Age),ave(a$Age,FUN=function(x) mean(x,na.rm = TRUE)),a$Age)
+a$Salary=ifelse(is.na(a$Salary),ave(a$Salary,FUN=function(x) mean(x,na.rm = TRUE)),a$Salary)
+
+#Encoding Catogorical variable :
+a$Country=factor(a$Country,levels =c('France','Spain','Germany'),labels=c(1,2,3))
+a$Purchased=factor(a$Purchased,level=c('Yes','No'),labels = c(1,0))
+
+#Splitting the Data set to Training and Testing Data:
+library(caTools)
+set.seed(123)
+split=sample.split(a$Purchased,SplitRatio = 0.8)
+training_set=subset(a,split==TRUE)
+test_set=subset(a,split==FALSE)  
+
+#Feature scaling:
+training_set[2:3]=scale(training_set[2:3])
+test_set[2:3]=scale(test_set[2:3])2,3))

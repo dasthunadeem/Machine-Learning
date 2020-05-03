@@ -1,0 +1,27 @@
+#Importing Data Set:
+a=read.csv('Market_Basket_Optimisation.csv',header = FALSE)
+
+#Converting to Spars Matrix:
+library(arules)
+a=read.transactions('Market_Basket_Optimisation.csv',header = FALSE, sep = ",",rm.duplicates = TRUE)
+summary(a)
+
+#Plotting Item Frequency Chart:
+itemFrequencyPlot(a,topN=10)
+
+#Fitting the Data to Apriori Module:
+rules=apriori(data=a,parameter = list(support=0.004,confidence=0.2))
+
+#Sorting the Rules:
+rule_sort=sort(rule,by='lift')
+
+#Visulising the Result:
+inspect(rule_sort[1:10])
+
+'''
+2 Line code:
+library(arules)
+a=read.transactions('Market_Basket_Optimisation.csv',
+                    header = FALSE,sep = ",",rm.duplicates = TRUE)
+inspect(sort(apriori(data=a,parameter = list(support=0.004,confidence=0.2)),by='lift')[1:10])
+'''

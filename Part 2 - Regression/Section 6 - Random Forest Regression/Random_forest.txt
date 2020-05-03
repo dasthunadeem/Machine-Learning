@@ -1,0 +1,29 @@
+#Importing Data:
+a=read.csv('Position_Salaries.csv')
+a=a[,2:3]
+
+#Fitting the data to Random_Forest Module:
+library(randomForest)
+'''
+#a[1] is a data frame
+#a$Salary is a vector
+'''
+set.seed(1234)
+reg=randomForest(x=a[1],y=a$Salary,ntree=500)
+
+#Predicting the test and training set
+y_predict=predict(reg,newdata=a)
+
+#Plotting the Graph:
+library(ggplot2)
+x_grid=seq(min(a$Level),max(a$Level),0.001)
+y_predict_grid=predict(reg,newdata=data.frame(Level=x_grid))
+ggplot()+
+  geom_point(aes(x=a$Level,y=a$Salary),colour='red')+
+  geom_line(aes(x=x_grid,y=y_predict_grid),colour='blue')+
+  ggtitle('Random Forest')+
+  xlab('level')+
+  ylab('Salary')
+
+#Final Prediction Check:
+y_predict_final=predict(reg,newdata=data.frame(Level=6.5))

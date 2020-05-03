@@ -1,0 +1,28 @@
+#Importing Data Set:
+a=read.csv('50_Startups.csv')
+
+#Encoding Catogorical variable:
+a$State=factor(a$State,levels = c('New York','California','Florida'),labels = c(1,2,3))
+
+#Splitting the Data set to Training and Testing Data:
+library(caTools)
+set.seed(123)
+split=sample.split(a$Profit,SplitRatio = 0.8)
+training_set=subset(a,split==TRUE)
+testing_set=subset(a,split==FALSE)
+
+#Fitting the data to Linear Reg. Module:
+reg=lm(formula = Profit~.,data = training_set)
+
+#Predicting the test and training set
+pred_test=predict(reg,newdata = testing_set)
+
+#Backward Elimination to predict optimum individual
+reg=lm(formula = Profit~R.D.Spend+Administration+Marketing.Spend+State
+       ,data = training_set)
+
+reg=lm(formula = Profit~R.D.Spend+Administration+Marketing.Spend
+       ,data = training_set)
+
+reg=lm(formula = Profit~R.D.Spend+Marketing.Spend
+       ,data = training_set)

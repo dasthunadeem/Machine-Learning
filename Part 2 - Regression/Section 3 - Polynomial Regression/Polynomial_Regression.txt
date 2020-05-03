@@ -1,0 +1,45 @@
+#Importing Data Set:
+a=read.csv('position_Salaries.csv')
+a=a[,2:3] # since position and level are same 
+
+'''
+just as a reference we creat linear regression
+'''
+#Fitting the data to Linear reg Module:
+reg=lm(formula = Salary~Level,data = a)
+y_pred=predict(reg, newdata=a)
+#Fitting the data to Polinomial Module:
+a$Level2=a$Level^2
+a$Level3=a$Level^3
+a$Level4=a$Level^4
+poly_reg=lm(formula = Salary~.,data = a)#here formula should contain (.)so that all new polinomial value are included
+
+#Predicting the test and training set
+y_pred_poly=predict(poly_reg, newdata=a)
+
+#Plotting the Graph:
+#Linear regression model:
+library(ggplot2)
+ggplot()+
+  geom_point(aes(x=a$Level,y=a$Salary),colour='red')+
+  geom_line(aes(x=a$Level,y=y_pred),colour='blue')+
+  ggtitle('linear regression model')+
+  xlab('Level')+
+  ylab('Salary')
+#Polynomial model:
+ggplot()+
+  geom_point(aes(x=a$Level,y=a$Salary),colour='red')+
+  geom_line(aes(x=a$Level,y=y_pred_poly),colour='blue')+
+  ggtitle('polynomial model')+
+  xlab('Level')+
+  ylab('Salary')
+
+#Final Prediction Check: 
+#Linear regression model:
+y_pred=predict(reg, newdata=data.frame(Level=6.5))
+
+#Polynomial model:
+y_pred_poly=predict(poly_reg, newdata=data.frame(Level=6.5,
+                                                 Level2=6.5^2,
+                                                 Level3=6.5^3,
+                                                 Level4=6.5^4))

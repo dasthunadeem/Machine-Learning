@@ -1,0 +1,36 @@
+#Importing Data Set:
+a=read.csv('Salary_Data.csv')
+
+#Splitting the Data set to Training and Testing Data:
+library(caTools)
+set.seed(123)
+split=sample.split(a[,2],SplitRatio =0.67)
+training_set=subset(a,split==TRUE)
+test_set=subset(a,split==FALSE)
+
+#Fitting the data to Linear Regression Module:
+reg=lm(formula=Salary~YearsExperience,data=training_set)
+
+#Predicting the test and training set
+test_predict=predict(reg,newdata = test_set)
+training_predict=predict(reg,newdata=training_set)
+
+#Plotting the Graph:
+library(ggplot2)
+#plotting the Training grapgh :
+ggplot()+
+  geom_point(aes(x=training_set$YearsExperience,y=training_set$Salary),colour='red')+
+  geom_line(aes(x=training_set$YearsExperience,y=training_predict),colour='blue')+
+  ggtitle('Salary Vs Exp')+
+  xlab('Exp')+
+  ylab('Salary')
+
+#plotting the Testing grapgh :
+ggplot()+
+  geom_point(aes(x=test_set$YearsExperience,y=test_set$Salary),colour='green')+
+  geom_line(aes(x=training_set$YearsExperience,y=training_predict),colour='black')+
+  ggtitle('Test_set: Salary Vs Exp')+
+  xlab('Exp')+
+  ylab('Salary')
+
+y_predict_Final=predict(reg,newdata=data.frame(YearsExperience=6.5))

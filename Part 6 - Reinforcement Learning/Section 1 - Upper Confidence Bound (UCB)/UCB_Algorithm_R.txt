@@ -1,0 +1,39 @@
+#Importing Data Set:
+a=read.csv('Ads_CTR_Optimisation.csv')
+
+#Coding UCB_Algorithm:
+d=10                   # number of adds
+Numb_of_selection=integer(d)
+Sum_of_rewards=integer(d)
+ad_selected=integer()
+Total_reward=0
+#Computing UCB(Upper Confidence Bound):
+for(n in 1:nrow(a)){
+  max_UCB=0
+  ad=0
+  for (i in 1:10){
+    if(Numb_of_selection[i]>0){
+      avg_reward=Sum_of_rewards[i]/Numb_of_selection[i]
+      delta_i=sqrt(1.5*(log(n)/Numb_of_selection[i]))
+      UCB=avg_reward+delta_i
+    }
+    else{
+      UCB=1e400
+    }
+    if(UCB>max_UCB){
+      max_UCB=UCB
+      ad=i
+    }
+  }
+  ad_selected=append(ad_selected,ad)
+  Numb_of_selection[ad]=Numb_of_selection[ad]+1
+  reward=a[n,ad]
+  Sum_of_rewards[ad]=Sum_of_rewards[ad]+reward
+  Total_reward=Total_reward+reward
+}
+
+#Plotting The Graph:
+hist(ad_selected,main ='UCB of ads selections' ,
+     xlab ='Ads' ,
+     ylab ='Number of times each ad was selected',
+     col='blue')

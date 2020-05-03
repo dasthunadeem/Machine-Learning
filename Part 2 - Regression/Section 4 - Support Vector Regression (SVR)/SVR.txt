@@ -1,0 +1,23 @@
+#Importing Data Set:
+a=read.csv('position_Salaries.csv')
+a=a[,2:3] # since position and level are same hence elilimating 1st column
+
+#Fitting the data to SVR Module:
+library(e1071) 
+set.seed(123)
+reg=svm(x=a$Level,y=a$Salary,type ='eps-regression' )
+
+#Predicting the test and training set
+y_pred=predict(reg,newdata=a$Level)
+
+#Plotting the Graph:
+library(ggplot2)
+ggplot()+
+  geom_point(aes(x=a$Level,y=a$Salary),colour='red')+
+  geom_line(aes(x=a$Level,y=y_pred),colour='blue')+
+  ggtitle('SVR')+
+  xlab('Level')+
+  ylab('Salary')
+
+#Final Prediction Check: 
+y_pred_check=predict(reg, newdata=data.frame(Level=6.5))

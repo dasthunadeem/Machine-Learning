@@ -1,0 +1,70 @@
+#Importing Data Set:
+a=read.csv('Social_Network_Ads.csv')
+a=a[,3:5]
+
+#since Naive bays will creat an error to predict the Prob bet 0 and 1
+a$Purchased=factor(a$Purchased,levels = c(0,1)) 
+
+#Splitting the Data set to Training and Testing Data:
+library(caTools)
+set.seed(123)
+split=sample.split(a$Purchased,SplitRatio=0.75)
+training_set=subset(a,split==TRUE)
+testing_set=subset(a,split==FALSE)
+
+#Feature scaling:
+training_set[,1:2]=scale(training_set[,1:2])
+testing_set[,1:2]=scale(testing_set[,1:2])
+
+
+#Fitting the data to Decision Tree Module:
+library(rpart)
+classifier=rpart(formula=Purchased~.,
+                 data=training_set)
+
+#Finding the Probability of each data and then predicting 0 or 1 :
+#Predicting the test set:
+y_pred=predict(classifier,newdata = testing_set[-3],type='class')
+ 
+#Confusion Metrix to evaluate the prediction:
+met=table(testing_set$Purchased,y_pred)
+Accuracy=(sum(diag(met))/sum(met))*100
+
+#Plotting the Graph:
+#Training Data:
+library(ElemStatLearn)
+set=training_set
+x1=seq(min(set[,1])-1,max(set[,1])+1,0.01)
+x2=seq(min(set[,2])-1,max(set[,2])+1,0.01)
+x_grid=expand.grid(x1,x2)
+colnames(x_grid)=c('Age','EstimatedSalary')
+y_pred_grid=predict(classifier,newdata = x_grid)
+
+
+#Plotting Scatter Plot:
+plot(set$Age,set$EstimatedSalary,main='Training Set',xlab='Age',ylab='EstimatedSalary',
+     xlim=range(x1),ylim=range(x2))
+#Plotting Outline :
+mat_grid=matrix(as.numeric(y_pred_grid),length(x1),length(x2))
+contour(x1,x2,mat_grid,add=TRUE)
+points(x_grid,pch='.',col=ifelse(y_pred_grid==1,'springgreen3','tomato'))
+#Optimizing Scatter plot
+points(set,pch=21,bg=ifelse(set[,3]==1,'green4','red3'))
+
+#Testing Data:
+set=testing_set
+x1=seq(min(set[,1])-1,max(set[,1])+1,0.01)
+x2=seq(min(set[,2])-1,max(set[,2])+1,0.01)
+x_grid=expand.grid(x1,x2)
+colnames(x_grid)=c('Age','EstimatedSalary')
+y_pred_grid=predict(classifier,newdata = x_grid)
+
+#Plotting Scatter Plot:
+plot(set$Age,set$EstimatedSalary,main='Testing_set',xlab='Age',ylab='EstimatedSalary',
+     xlim=range(x1),ylim=range(x2))
+#Plotting Outline :
+mat_grid=matrix(as.numeric(y_pred_grid),length(x1),length(x2))
+contour(x1,x2,mat_grid,add=TRUE)
+points(x_grid,pch='.',col=ifelse(y_pred_grid==1,'springgreen3','tomato'))
+#Optimizing Scatter plot
+points(set,pch=21,bg=ifelse(set[,3]==1,'green4','red3'))

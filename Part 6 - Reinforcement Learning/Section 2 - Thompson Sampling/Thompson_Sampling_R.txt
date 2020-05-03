@@ -1,0 +1,47 @@
+#Importing Data Set:
+a=read.csv('Ads_CTR_Optimisation.csv')
+
+#Coding Thompson_Sampling_Algorithm:
+d=10                   # number of adds
+Numb_of_reward_1=integer(d)
+Numb_of_reward_0=integer(d)
+ad_selected=integer()
+Total_reward=0
+
+#Computing Random Sample:
+
+for (n in 1:nrow(a)){
+  max_Beta=0
+  ad=0
+  for (i in 1:d){
+    random_beta=rbeta(n=1,shape1 = Numb_of_reward_1[i]+1,
+                      shape2 = Numb_of_reward_0[i]+1)  # n=1 is number of data point to consider from Beta Distribution
+    if (random_beta>max_Beta){
+      max_Beta=random_beta
+      ad=i
+    }
+  }
+  ad_selected=append(ad_selected,ad)
+  reward=a[n,ad]
+  Total_reward=Total_reward + reward
+  if (reward==1){
+    Numb_of_reward_1[ad] = Numb_of_reward_1[ad]+1
+  }
+  else{
+    Numb_of_reward_0[ad] = Numb_of_reward_0[ad]+1
+  }
+}
+
+#Plotting The Graph:
+hist(ad_selected,main ='Thompson_Sampling_Algorithm of ads selections' ,
+     xlab ='Ads' ,
+     ylab ='Number of times each ad was selected',
+     col='blue')
+
+
+
+
+
+
+
+

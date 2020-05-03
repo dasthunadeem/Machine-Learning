@@ -1,0 +1,27 @@
+#Importing Data Set:
+a=read.csv('Position_Salaries.csv')
+a=a[,2:3]
+'''
+since data is too small no need of splitting the data to training and testing set 
+'''
+
+#Fitting the data to Decision Tree Module:
+library(rpart)
+reg=rpart(formula = Salary~.,data = a,
+          control = rpart.control(minsplit = 1)) #rpart.control enables the split in the data set
+#Predicting the test and training set
+y_prdict=predict(reg,newdata=a)
+
+#Plotting the Graph:
+library(ggplot2)
+x_grid=seq(min(a$Level),max(a$Level),0.001)    # for higher resolution of the data
+y_pred_grid=predict(reg,newdata = data.frame(Level=x_grid))
+ggplot()+
+  geom_point(aes(x=a$Level,y=a$Salary),colour='red')+
+  geom_line(aes(x=x_grid,y=y_pred_grid),colour='blue')+
+  ggtitle('Decision Tree Module')+
+  xlab('Level')+
+  ylab('Salary')
+
+#Final Prediction Check: 
+y_prdict=predict(reg,newdata=data.frame(Level=6.5))
